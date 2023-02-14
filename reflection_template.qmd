@@ -47,8 +47,13 @@ message <- read_csv(here::here("data", "scrambled_message.txt")
 ```
 
 **WD-2: I can select necessary columns from a dataset.**
+Lab 3 Question 9
+
 
 ```{r wd-2}
+demographics_information <- hiphop_clean |>
+  distinct( subj , .keep_all = TRUE) |>
+  select(sex:ethnic, ethnic1) 
 
 ```
 
@@ -57,24 +62,39 @@ message <- read_csv(here::here("data", "scrambled_message.txt")
 -   numeric
 
 ```{r wd-3-numeric}
-
+hiphop_clean |>
+  group_by(word) |>
+  filter(age < 20) |> 
+  summarize(mean_word_score = mean(as.numeric(familiarity))) |>
+  slice_max(order_by = mean_word_score)
 ```
 
 -   character -- specifically a string
-
+Lab 4 Question 2: Data Cleaning
 ```{r wd-3-string}
+avocado_clean <- avocado |>
+  filter(region != "TotalUS") |>
+  rename("Small_Hass" = '4046', "Large_Hass" = '4225',
+         "Extra_Large_Hass" = '4770') 
 
 ```
 
 -   factor
-
+Lab 3 Question 13: "Male" and "Female" were Factors
 ```{r wd-3-factor}
+hiphop_clean |>
+  group_by(word) |>
+  filter(sex == "Male", ethnic1 == "white", age > 30) |> 
+  summarize(mean_word_score = mean(as.numeric(familiarity))) |>
+  slice_max(order_by = mean_word_score)
 
 ```
 
 -   date
-
+Practice Activity 5.1 (Lubridate) Question 2
 ```{r wd-3-date}
+suspects <- suspects %>%
+  filter(!wday(Time.Spotted, label = TRUE, abbr = FALSE) %in% c("Tuesday" , "Thursday"))
 
 ```
 
