@@ -19,22 +19,31 @@ execute:
 
 **WD-1: I can import data from a *variety* of formats (e.g., csv, xlsx, txt, etc.).**
 
--   `csv`
+-   `csv`.  : Lab 2 Question 1
 
 ```{r wd-1-csv}
 
+surveys <- read_csv(file =  here( "week2" , "labs" , "surveys.csv" ))
+
 ```
 
--   `xlsx`
+-   `xlsx` Practice Activity 4 Question 1
 
 ```{r wd-1-xlsx}
+library(readxl) 
+library(tidyverse)
+
+military <- read_xlsx(here::here("data", "gov_spending_per_capita.xlsx"), 
+                      sheet = "Share of Govt. spending", 
+                      skip = 6, n_max =192)
 
 ```
 
--   `txt`
+-   `txt` Practice Activity 5.2 Setup
 
 ```{r wd-1-txt}
-
+message <- read_csv(here::here("data", "scrambled_message.txt")
+                      )
 ```
 
 **WD-2: I can select necessary columns from a dataset.**
