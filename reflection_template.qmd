@@ -80,7 +80,7 @@ avocado_clean <- avocado |>
 ```
 
 -   factor
-Lab 3 Question 13: "Male" and "Female" were Factors
+Lab 3 Question 13: "Male" and "ethnic1" were Factors
 ```{r wd-3-factor}
 hiphop_clean |>
   group_by(word) |>
@@ -101,27 +101,47 @@ suspects <- suspects %>%
 **WD-4: I can modify existing variables and create new variables in a dataframe for a *variety* of data types (e.g., numeric, integer, character, factor, date).**
 
 -   numeric
+PA 3, Question 6
 
 ```{r wd-4-numeric}
+colleges_clean <- colleges_clean |> 
+  mutate(TUITION_DIFF = TUITIONFEE_OUT - TUITIONFEE_IN)
 
 ```
 
 -   character -- specifically a string
-
+Lab 3 Question 7
 ```{r wd-4-string}
+hiphop_clean <- hiphop_clean |> 
+  mutate(ethnic1 = if_else(condition = ethnic == "white" ,true = "white" ,
+                           false = "nonwhite"), 
+         ethnic1 = as.factor(ethnic1))
+
 
 ```
 
 -   factor
+Lab 3 Question 5
 
 ```{r wd-4-factor}
-
+hiphop_clean <- hiphop |>
+  select(-c(numPreferredArtists , numOverallArtists)) |>
+  mutate(
+    across( .cols = c(word , subj , sex , ethnic , familiarity , fam1 , jayz ,
+                  jayz1 , barkley , boondocks , boondocks1 , monique , bieber) ,
+           .fns = as.factor)
+  )
 ```
 
 -   date
+PA 5, Question 1
 
 ```{r wd-4-date}
-
+suspects <- suspects %>%
+  mutate(Time.Spotted = ymd_hms(Time.Spotted),
+         Time.Spotted = force_tz(Time.Spotted,
+                                 tzone = "America/Los_Angeles")
+         )
 ```
 
 **WD-5: I can use mutating joins to combine multiple dataframes.**
@@ -153,29 +173,45 @@ suspects <- suspects %>%
 **WD-6: I can use filtering joins to filter rows from a dataframe.**
 
 -   `semi_join()`
-
+Lab 4 Data Cleaning (2)
 ```{r wd-6-semi}
+avocado_clean_major_region <- avocado_clean |>
+  semi_join( super_regions, by = "region") 
 
 ```
 
 -   `anti_join()`
+Lab 4 Data Cleaning (2)
 
 ```{r wd-6-anti}
+avocado_clean_subregion <- avocado_clean |>
+  anti_join(super_regions, by = "region") 
 
 ```
 
 **WD-7: I can pivot dataframes from long to wide and visa versa**
 
 -   `pivot_longer()`
-
+PA 4 Question 4
 ```{r wd-7-long}
+military_clean <- military_clean |>
+  pivot_longer(cols = "1988":"2019",
+               names_to = "Year",
+               values_to = "Spending",
+               values_drop_na = TRUE)
+military_clean
+
 
 ```
 
 -   `pivot_wider()`
-
+Lab 4 Question 6
 ```{r wd-7-wide}
-
+averages <- four_cities |>
+  group_by(region, type) |>
+  summarise(average = mean(AveragePrice)) |>
+  pivot_wider(names_from = type, values_from = average) |>
+  mutate(Difference = abs(conventional - organic))
 ```
 
 ## Reproducibility
