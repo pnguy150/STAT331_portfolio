@@ -19,16 +19,16 @@ execute:
 
 **WD-1: I can import data from a *variety* of formats (e.g., csv, xlsx, txt, etc.).**
 
--   `csv`.  : Lab 2 Question 1
-
+-   `csv`.  
+Lab 2 Question 1
 ```{r wd-1-csv}
 
 surveys <- read_csv(file =  here( "week2" , "labs" , "surveys.csv" ))
 
 ```
 
--   `xlsx` Practice Activity 4 Question 1
-
+-   `xlsx` 
+Practice Activity 4 Question 1
 ```{r wd-1-xlsx}
 library(readxl) 
 library(tidyverse)
@@ -39,8 +39,8 @@ military <- read_xlsx(here::here("data", "gov_spending_per_capita.xlsx"),
 
 ```
 
--   `txt` Practice Activity 5.2 Setup
-
+-   `txt` 
+Practice Activity 5.2 Setup
 ```{r wd-1-txt}
 message <- read_csv(here::here("data", "scrambled_message.txt")
                       )
@@ -48,8 +48,6 @@ message <- read_csv(here::here("data", "scrambled_message.txt")
 
 **WD-2: I can select necessary columns from a dataset.**
 Lab 3 Question 9
-
-
 ```{r wd-2}
 demographics_information <- hiphop_clean |>
   distinct( subj , .keep_all = TRUE) |>
@@ -60,7 +58,7 @@ demographics_information <- hiphop_clean |>
 **WD-3: I can filter rows from a dataframe for a *variety* of data types (e.g., numeric, integer, character, factor, date).**
 
 -   numeric
-
+Lab 3 Question 11
 ```{r wd-3-numeric}
 hiphop_clean |>
   group_by(word) |>
@@ -94,7 +92,8 @@ hiphop_clean |>
 Practice Activity 5.1 (Lubridate) Question 2
 ```{r wd-3-date}
 suspects <- suspects %>%
-  filter(!wday(Time.Spotted, label = TRUE, abbr = FALSE) %in% c("Tuesday" , "Thursday"))
+  filter(!wday(Time.Spotted, label = TRUE, abbr = FALSE) %in% 
+           c("Tuesday" , "Thursday"))
 
 ```
 
@@ -159,14 +158,16 @@ suspects <- suspects %>%
 ```
 
 -   `inner_join()`
-
+Preview Activity 4.3.1
 ```{r wd-5-inner}
-
+inner_join(prof_info, prof_course)
 ```
 
 -   `full_join()`
-
+Preview Activity 4.3.2
 ```{r wd-5-full}
+full_join(prof_info, prof_course)
+
 
 ```
 
