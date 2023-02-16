@@ -19,16 +19,17 @@ execute:
 
 **WD-1: I can import data from a *variety* of formats (e.g., csv, xlsx, txt, etc.).**
 
--   `csv`.  
-Lab 2 Question 1
+-   `csv`.\
+    Lab 2 Question 1
+
 ```{r wd-1-csv}
 
 surveys <- read_csv(file =  here( "week2" , "labs" , "surveys.csv" ))
 
 ```
 
--   `xlsx` 
-Practice Activity 4 Question 1
+-   `xlsx` Practice Activity 4 Question 1
+
 ```{r wd-1-xlsx}
 library(readxl) 
 library(tidyverse)
@@ -39,15 +40,15 @@ military <- read_xlsx(here::here("data", "gov_spending_per_capita.xlsx"),
 
 ```
 
--   `txt` 
-Practice Activity 5.2 Setup
+-   `txt` Practice Activity 5.2 Setup
+
 ```{r wd-1-txt}
 message <- read_csv(here::here("data", "scrambled_message.txt")
                       )
 ```
 
-**WD-2: I can select necessary columns from a dataset.**
-Lab 3 Question 9
+**WD-2: I can select necessary columns from a dataset.** Lab 3 Question 9
+
 ```{r wd-2}
 demographics_information <- hiphop_clean |>
   distinct( subj , .keep_all = TRUE) |>
@@ -57,8 +58,8 @@ demographics_information <- hiphop_clean |>
 
 **WD-3: I can filter rows from a dataframe for a *variety* of data types (e.g., numeric, integer, character, factor, date).**
 
--   numeric
-Lab 3 Question 11
+-   numeric Lab 3 Question 11
+
 ```{r wd-3-numeric}
 hiphop_clean |>
   group_by(word) |>
@@ -67,8 +68,8 @@ hiphop_clean |>
   slice_max(order_by = mean_word_score)
 ```
 
--   character -- specifically a string
-Lab 4 Question 2: Data Cleaning
+-   character -- specifically a string Lab 4 Question 2: Data Cleaning
+
 ```{r wd-3-string}
 avocado_clean <- avocado |>
   filter(region != "TotalUS") |>
@@ -77,8 +78,8 @@ avocado_clean <- avocado |>
 
 ```
 
--   factor
-Lab 3 Question 13: "Male" and "ethnic1" were Factors
+-   factor Lab 3 Question 13: "Male" and "ethnic1" were Factors
+
 ```{r wd-3-factor}
 hiphop_clean |>
   group_by(word) |>
@@ -88,8 +89,8 @@ hiphop_clean |>
 
 ```
 
--   date
-Practice Activity 5.1 (Lubridate) Question 2
+-   date Practice Activity 5.1 (Lubridate) Question 2
+
 ```{r wd-3-date}
 suspects <- suspects %>%
   filter(!wday(Time.Spotted, label = TRUE, abbr = FALSE) %in% 
@@ -99,8 +100,7 @@ suspects <- suspects %>%
 
 **WD-4: I can modify existing variables and create new variables in a dataframe for a *variety* of data types (e.g., numeric, integer, character, factor, date).**
 
--   numeric
-PA 3, Question 6
+-   numeric PA 3, Question 6
 
 ```{r wd-4-numeric}
 colleges_clean <- colleges_clean |> 
@@ -108,8 +108,8 @@ colleges_clean <- colleges_clean |>
 
 ```
 
--   character -- specifically a string
-Lab 3 Question 7
+-   character -- specifically a string Lab 3 Question 7
+
 ```{r wd-4-string}
 hiphop_clean <- hiphop_clean |> 
   mutate(ethnic1 = if_else(condition = ethnic == "white" ,true = "white" ,
@@ -119,8 +119,8 @@ hiphop_clean <- hiphop_clean |>
 
 ```
 
--   factor
-Lab 3 Question 5 (revision)
+-   factor Lab 3 Question 5 (revision)
+
 ```{r wd-4-factor}
 hiphop_clean <- hiphop |>
   select(-c(numPreferredArtists , numOverallArtists)) |>
@@ -131,8 +131,8 @@ hiphop_clean <- hiphop |>
   )
 ```
 
--   date
-PA 5, Question 1
+-   date PA 5, Question 1
+
 ```{r wd-4-date}
 suspects <- suspects %>%
   mutate(Time.Spotted = ymd_hms(Time.Spotted),
@@ -155,14 +155,14 @@ suspects <- suspects %>%
 
 ```
 
--   `inner_join()`
-Preview Activity 4.3.1
+-   `inner_join()` Preview Activity 4.3.1
+
 ```{r wd-5-inner}
 inner_join(prof_info, prof_course)
 ```
 
--   `full_join()`
-Preview Activity 4.3.2
+-   `full_join()` Preview Activity 4.3.2
+
 ```{r wd-5-full}
 full_join(prof_info, prof_course)
 
@@ -171,16 +171,15 @@ full_join(prof_info, prof_course)
 
 **WD-6: I can use filtering joins to filter rows from a dataframe.**
 
--   `semi_join()`
-Lab 4 Data Cleaning (2)
+-   `semi_join()` Lab 4 Data Cleaning (2)
+
 ```{r wd-6-semi}
 avocado_clean_major_region <- avocado_clean |>
   semi_join( super_regions, by = "region") 
 
 ```
 
--   `anti_join()`
-Lab 4 Data Cleaning (2)
+-   `anti_join()` Lab 4 Data Cleaning (2)
 
 ```{r wd-6-anti}
 avocado_clean_subregion <- avocado_clean |>
@@ -190,8 +189,8 @@ avocado_clean_subregion <- avocado_clean |>
 
 **WD-7: I can pivot dataframes from long to wide and visa versa**
 
--   `pivot_longer()`
-Lab 4 Question 7
+-   `pivot_longer()` Lab 4 Question 7
+
 ```{r wd-7-long}
 avocado_ratios <- four_cities |>
   pivot_longer(cols = c("Small_Hass":"Extra_Large_Hass"),
@@ -203,8 +202,8 @@ avocado_ratios <- four_cities |>
 
 ```
 
--   `pivot_wider()`
-Lab 4 Question 6
+-   `pivot_wider()` Lab 4 Question 6
+
 ```{r wd-7-wide}
 averages <- four_cities |>
   group_by(region, type) |>
@@ -221,8 +220,8 @@ I've done this in the following provided assignments:
 
 **R-2: I can write well documented and tidy code.**
 
--   Example 1
-Lab 5 Question 3.3 (revision)
+-   Example 1 Lab 5 Question 3.3 (revision)
+
 ```{r r-2-1}
 surveys |>
   mutate(weekday = factor(lubridate::wday(x = date, label = TRUE), 
@@ -238,8 +237,8 @@ surveys |>
        x = "Weekday vs Weekend")
 ```
 
--   Example 2
-Lab 3 Question 7
+-   Example 2 Lab 3 Question 7
+
 ```{r r-2-2}
 hiphop_clean <- hiphop_clean |> 
   mutate(ethnic1 = if_else(condition = ethnic == "white" ,true = "white" ,
@@ -251,8 +250,8 @@ hiphop_clean <- hiphop_clean |>
 
 **R-3: I can write robust programs that are resistant to changes in inputs.**
 
--   Example 1
-Lab 3 Question 5 (revision)
+-   Example 1 Lab 3 Question 5 (revision)
+
 ```{r r-3-1}
 hiphop_clean <- hiphop |>
   select(-c(numPreferredArtists , numOverallArtists)) |>
@@ -264,8 +263,8 @@ hiphop_clean <- hiphop |>
 
 ```
 
--   Example 2
-Lab 3 Question 11
+-   Example 2 Lab 3 Question 11
+
 ```{r r-3-2}
 hiphop_clean |>
   group_by(word) |>
@@ -279,15 +278,14 @@ hiphop_clean |>
 
 **DVS-1: I can create visualizations for a *variety* of variable types (e.g., numeric, character, factor, date)**
 
--   numeric variables
-Lab 2 Question 6
+-   numeric variables Lab 2 Question 6
+
 ```{r dvs-1-num}
 ggplot(data = surveys , mapping = aes(x = weight , y = hindfoot_length)) +
   geom_jitter(alpha = .2)
 ```
 
--   numeric variables and categorical variables
-Lab 4 Question 6
+-   numeric variables and categorical variables Lab 4 Question 6
 
 ```{r dvs-2-num-cat}
 ggplot(data = averages, mapping = aes(x = region, y = Difference)) +
@@ -301,8 +299,8 @@ ggplot(data = averages, mapping = aes(x = region, y = Difference)) +
 
 ```
 
--   categorical variables
-Lab 3 Question 10
+-   categorical variables Lab 3 Question 10
+
 ```{r dvs-2-cat}
 ggplot(data = demographics_information, aes(x = sex)) +
   geom_bar() + 
@@ -311,8 +309,8 @@ ggplot(data = demographics_information, aes(x = sex)) +
   theme(legend.position = "none")
 ```
 
--   dates
-Lab 5 Question 3.3 (revision)
+-   dates Lab 5 Question 3.3 (revision)
+
 ```{r dvs-2-date}
 surveys |>
   mutate(weekday = factor(lubridate::wday(x = date, label = TRUE), 
@@ -330,8 +328,8 @@ surveys |>
 
 **DVS-2: I use plot modifications to make my visualization clear to the reader.**
 
--   Example 1
-Lab 5 Question 2.4
+-   Example 1 Lab 5 Question 2.4
+
 ```{r dvs-2-1}
 summarized_surveys |>
   ggplot(mapping = aes( x = year, y = mean_weight, 
@@ -344,8 +342,8 @@ summarized_surveys |>
 
 ```
 
--   Example 2
-Lab 4 Question 7
+-   Example 2 Lab 4 Question 7
+
 ```{r dvs-2-2}
 ggplot(data = avocado_ratios, mapping = aes(fill = Avocado_Type, x = region,
                                              y = total)) +
@@ -360,8 +358,8 @@ ggplot(data = avocado_ratios, mapping = aes(fill = Avocado_Type, x = region,
 
 **DVS-3: I show creativity in my visualizations**
 
--   Example 1
-Lab 4 Question 5
+-   Example 1 Lab 4 Question 5
+
 ```{r dvs-3-1}
 ggplot(data = metros_avocado_data, mapping = aes(x = `Total Volume`,
                                                  y = region)) +
@@ -370,8 +368,8 @@ ggplot(data = metros_avocado_data, mapping = aes(x = `Total Volume`,
   labs(y = "Metros", title = "Metros With the Highest Average of Total Volume")
 ```
 
--   Example 2
-Lab 3 Question 10
+-   Example 2 Lab 3 Question 10
+
 ```{r dvs-3-2}
 ggplot(data = demographics_information, aes(x = age))+
   geom_histogram() + 
@@ -383,8 +381,8 @@ ggplot(data = demographics_information, aes(x = age))+
 
 **DVS-4: I can calculate numerical summaries of variables.**
 
--   Example 1
-Lab 4 Question 7
+-   Example 1 Lab 4 Question 7
+
 ```{r dvs-4-1}
 avocado_ratios <- four_cities |>
   pivot_longer(cols = c("Small_Hass":"Extra_Large_Hass"),
@@ -395,8 +393,8 @@ avocado_ratios <- four_cities |>
 
 ```
 
--   Example 2
-Lab 5 Question 2.2
+-   Example 2 Lab 5 Question 2.2
+
 ```{r dvs-4-2}
 summarized_surveys <- surveys |>
   group_by(species, year) |>
@@ -406,8 +404,8 @@ summarized_surveys <- surveys |>
 
 **DVS-5: I can find summaries of variables across multiple groups.**
 
--   Example 1
-Lab 4 Question 6 (Revision)
+-   Example 1 Lab 4 Question 6 (Revision)
+
 ```{r dvs-5-1}
 averages <- four_cities |>
   group_by(region, type) |>
@@ -416,8 +414,8 @@ averages <- four_cities |>
   mutate(Difference = abs(conventional - organic))
 ```
 
--   Example 2
-Lab 4 Question 7
+-   Example 2 Lab 4 Question 7
+
 ```{r dvs-5-2}
 avocado_ratios <- four_cities |>
   pivot_longer(cols = c("Small_Hass":"Extra_Large_Hass"),
@@ -430,8 +428,8 @@ avocado_ratios <- four_cities |>
 
 **DVS-6: I can create tables which make my summaries clear to the reader.**
 
--   Example 1
-Lab 4 Question 7
+-   Example 1 Lab 4 Question 7
+
 ```{r dvs-6-1}
  averages <- four_cities |>
   group_by(region, type) |>
@@ -440,8 +438,8 @@ Lab 4 Question 7
   mutate(Difference = abs(conventional - organic))
 ```
 
--   Example 2
-Lab 4 Question 7
+-   Example 2 Lab 4 Question 7
+
 ```{r dvs-6-2}
 avocado_ratios <- four_cities |>
   pivot_longer(cols = c("Small_Hass":"Extra_Large_Hass"),
@@ -470,8 +468,8 @@ avocado_ratios <- four_cities |>
 
 **PE-1: I can write concise code which does not repeat itself.**
 
--   using a single function call
-PA3 Part 2
+-   using a single function call PA3 Part 2
+
 ```{r pe-1-one-call}
 mystery_school <- colleges_clean |>
   filter(REGION == "7", ADM_RATE > median(ADM_RATE), TUITION_DIFF != 0,
@@ -480,8 +478,8 @@ mystery_school <- colleges_clean |>
   arrange(TUITIONFEE_IN,TUITIONFEE_OUT)
 ```
 
--   `across()`
-Lab 3 Question 5 (revision)
+-   `across()` Lab 3 Question 5 (revision)
+
 ```{r pe-1-across}
 hiphop_clean <- hiphop |>
   select(-c(numPreferredArtists , numOverallArtists)) |>
@@ -514,8 +512,8 @@ hiphop_clean <- hiphop |>
 
 **PE-3:I can use iteration to reduce repetition in my code.**
 
--   `across()`
-Lab 3 Question 5 (revision)
+-   `across()` Lab 3 Question 5 (revision)
+
 ```{r pe-3-across}
 hiphop_clean <- hiphop |>
   select(-c(numPreferredArtists , numOverallArtists)) |>
@@ -539,8 +537,8 @@ hiphop_clean <- hiphop |>
 
 **PE-4: I can use modern tools when carrying out my analysis.**
 
--   Example 1
-Lab 4 Question 7
+-   Example 1 Lab 4 Question 7
+
 ```{r pe-4-1}
 avocado_ratios <- four_cities |>
   pivot_longer(cols = c("Small_Hass":"Extra_Large_Hass"),
@@ -550,8 +548,8 @@ avocado_ratios <- four_cities |>
   summarise(total = sum(Total))
 ```
 
--   Example 2
-Lab 3 Question 5 (revision)
+-   Example 2 Lab 3 Question 5 (revision)
+
 ```{r pe-4-2}
 hiphop_clean <- hiphop |>
   select(-c(numPreferredArtists , numOverallArtists)) |>
@@ -602,4 +600,4 @@ hiphop_clean <- hiphop |>
 
 ## Peer Support & Collaboration
 
-<!-- Include an image of feedback you gave that you are proud of (either in a peer review or in Discord) -->
+<!-- Include an image of feedback you gave that you are proud of (either in a peer review or in Discord) -->![](images/Screen%20Shot%202023-02-16%20at%2010.59.54%20AM.png){width="360"}
