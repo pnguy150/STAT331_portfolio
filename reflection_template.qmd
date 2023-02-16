@@ -11,7 +11,7 @@ execute:
   echo: true
 ---
 
-[**My Grade:**]{.underline} I believe my grade equivalent to course work evidenced below to be an \_\_.
+[**My Grade:**]{.underline} I believe my grade equivalent to course work evidenced below to be an A.
 
 [**Learning Objective Evidence:**]{.underline} In the code chunks below, provide code from a Lab or Challenge assignment where you believe you have demonstrated proficiency with the specified learning target. Be sure to specify **where** the code came from (e.g., Lab 4 Question 2).
 
@@ -120,21 +120,19 @@ hiphop_clean <- hiphop_clean |>
 ```
 
 -   factor
-Lab 3 Question 5
-
+Lab 3 Question 5 (revision)
 ```{r wd-4-factor}
 hiphop_clean <- hiphop |>
   select(-c(numPreferredArtists , numOverallArtists)) |>
   mutate(
     across( .cols = c(word , subj , sex , ethnic , familiarity , fam1 , jayz ,
                   jayz1 , barkley , boondocks , boondocks1 , monique , bieber) ,
-           .fns = as.factor)
+           ~as.factor(.x))
   )
 ```
 
 -   date
 PA 5, Question 1
-
 ```{r wd-4-date}
 suspects <- suspects %>%
   mutate(Time.Spotted = ymd_hms(Time.Spotted),
@@ -193,14 +191,14 @@ avocado_clean_subregion <- avocado_clean |>
 **WD-7: I can pivot dataframes from long to wide and visa versa**
 
 -   `pivot_longer()`
-PA 4 Question 4
+Lab 4 Question 7
 ```{r wd-7-long}
-military_clean <- military_clean |>
-  pivot_longer(cols = "1988":"2019",
-               names_to = "Year",
-               values_to = "Spending",
-               values_drop_na = TRUE)
-military_clean
+avocado_ratios <- four_cities |>
+  pivot_longer(cols = c("Small_Hass":"Extra_Large_Hass"),
+               names_to = "Avocado_Type",
+               values_to = "Total") |>
+  group_by(region,Avocado_Type, type) |>
+  summarise(total = sum(Total))
 
 
 ```
@@ -224,28 +222,56 @@ I've done this in the following provided assignments:
 **R-2: I can write well documented and tidy code.**
 
 -   Example 1
-
+Lab 5 Question 3.3 (revision)
 ```{r r-2-1}
-
+surveys |>
+  mutate(weekday = factor(lubridate::wday(x = date, label = TRUE), 
+                          levels = day_levels)) |> #order factors mon-sun
+  filter(!is.na(date)) |> 
+  #collapse Weekends and Weekdays 
+  mutate(weekday = fct_collapse(.f = weekday,
+                              "Weekday" = c("Mon", "Tue", "Wed", "Thu", "Fri"),
+                              "Weekend" = c( "Sat", "Sun"))) |> 
+  ggplot(mapping = aes(x = weekday)) +
+  geom_bar() +
+  labs(title = "Number of Captured Rodents by Weekday vs Weekend", y = NULL, 
+       x = "Weekday vs Weekend")
 ```
 
 -   Example 2
-
+Lab 3 Question 7
 ```{r r-2-2}
+hiphop_clean <- hiphop_clean |> 
+  mutate(ethnic1 = if_else(condition = ethnic == "white" ,true = "white" ,
+                           false = "nonwhite"), 
+         ethnic1 = as.factor(ethnic1))
+
 
 ```
 
 **R-3: I can write robust programs that are resistant to changes in inputs.**
 
 -   Example 1
-
+Lab 3 Question 5 (revision)
 ```{r r-3-1}
+hiphop_clean <- hiphop |>
+  select(-c(numPreferredArtists , numOverallArtists)) |>
+  mutate(
+    across( .cols = c(word , subj , sex , ethnic , familiarity , fam1 , jayz ,
+                  jayz1 , barkley , boondocks , boondocks1 , monique , bieber) ,
+           ~as.factor(.x))
+  )
 
 ```
 
 -   Example 2
-
+Lab 3 Question 11
 ```{r r-3-2}
+hiphop_clean |>
+  group_by(word) |>
+  filter(age < 20) |> 
+  summarize(mean_word_score = mean(as.numeric(familiarity))) |>
+  slice_max(order_by = mean_word_score)
 
 ```
 
@@ -286,20 +312,20 @@ ggplot(data = demographics_information, aes(x = sex)) +
 ```
 
 -   dates
-Lab 5 Question 3.3
+Lab 5 Question 3.3 (revision)
 ```{r dvs-2-date}
 surveys |>
   mutate(weekday = factor(lubridate::wday(x = date, label = TRUE), 
-                          levels =  day_levels)) |>
+                          levels = day_levels)) |> #order factors mon-sun
   filter(!is.na(date)) |> 
+  #collapse Weekends and Weekdays 
   mutate(weekday = fct_collapse(.f = weekday,
                               "Weekday" = c("Mon", "Tue", "Wed", "Thu", "Fri"),
-                              "Weekend" = c( "Sat", "Sun"))) |>
+                              "Weekend" = c( "Sat", "Sun"))) |> 
   ggplot(mapping = aes(x = weekday)) +
   geom_bar() +
   labs(title = "Number of Captured Rodents by Weekday vs Weekend", y = NULL, 
        x = "Weekday vs Weekend")
-
 ```
 
 **DVS-2: I use plot modifications to make my visualization clear to the reader.**
@@ -385,7 +411,7 @@ Lab 4 Question 6 (Revision)
 ```{r dvs-5-1}
 averages <- four_cities |>
   group_by(region, type) |>
-  summarise(average = mean(AveragePrice)) |>
+  summarise(average_avocado_price = mean(AveragePrice)) |>
   pivot_wider(names_from = type, values_from = average) |>
   mutate(Difference = abs(conventional - organic))
 ```
@@ -407,13 +433,22 @@ avocado_ratios <- four_cities |>
 -   Example 1
 Lab 4 Question 7
 ```{r dvs-6-1}
-
+ averages <- four_cities |>
+  group_by(region, type) |>
+  summarise(average_avocado_price = mean(AveragePrice)) |>
+  pivot_wider(names_from = type, values_from = average) |>
+  mutate(Difference = abs(conventional - organic))
 ```
 
 -   Example 2
-Lab 5 Question 2.2
+Lab 4 Question 7
 ```{r dvs-6-2}
-
+avocado_ratios <- four_cities |>
+  pivot_longer(cols = c("Small_Hass":"Extra_Large_Hass"),
+               names_to = "Avocado_Type",
+               values_to = "Total") |>
+  group_by(region,Avocado_Type, type) |>
+  summarise(total = sum(Total))
 
 ```
 
@@ -436,22 +471,25 @@ Lab 5 Question 2.2
 **PE-1: I can write concise code which does not repeat itself.**
 
 -   using a single function call
-
+PA3 Part 2
 ```{r pe-1-one-call}
-
+mystery_school <- colleges_clean |>
+  filter(REGION == "7", ADM_RATE > median(ADM_RATE), TUITION_DIFF != 0,
+         SAT_AVG %% 2 != 0, STABBR != "ID" & STABBR != "MT", 
+         as.numeric(UGDS)/4 < 1000/ADM_RATE) |>
+  arrange(TUITIONFEE_IN,TUITIONFEE_OUT)
 ```
 
 -   `across()`
-
+Lab 3 Question 5 (revision)
 ```{r pe-1-across}
-military_clean <- military_clean |>
+hiphop_clean <- hiphop |>
+  select(-c(numPreferredArtists , numOverallArtists)) |>
   mutate(
-    across(
-      .cols = c("1988":"2019"), .fns = as.numeric
-    )
+    across( .cols = c(word , subj , sex , ethnic , familiarity , fam1 , jayz ,
+                  jayz1 , barkley , boondocks , boondocks1 , monique , bieber) ,
+           ~as.factor(.x))
   )
-#I understand that this implementation is no longer right since across() has 
-#been reworked.
 ```
 
 -   `map()` functions
@@ -477,14 +515,14 @@ military_clean <- military_clean |>
 **PE-3:I can use iteration to reduce repetition in my code.**
 
 -   `across()`
-Lab 3 Question 5
+Lab 3 Question 5 (revision)
 ```{r pe-3-across}
 hiphop_clean <- hiphop |>
   select(-c(numPreferredArtists , numOverallArtists)) |>
   mutate(
     across( .cols = c(word , subj , sex , ethnic , familiarity , fam1 , jayz ,
                   jayz1 , barkley , boondocks , boondocks1 , monique , bieber) ,
-           .fns = as.factor)
+           ~as.factor(.x))
   )
 
 ```
@@ -502,15 +540,26 @@ hiphop_clean <- hiphop |>
 **PE-4: I can use modern tools when carrying out my analysis.**
 
 -   Example 1
-
+Lab 4 Question 7
 ```{r pe-4-1}
-
+avocado_ratios <- four_cities |>
+  pivot_longer(cols = c("Small_Hass":"Extra_Large_Hass"),
+               names_to = "Avocado_Type",
+               values_to = "Total") |>
+  group_by(region,Avocado_Type, type) |>
+  summarise(total = sum(Total))
 ```
 
 -   Example 2
-
+Lab 3 Question 5 (revision)
 ```{r pe-4-2}
-
+hiphop_clean <- hiphop |>
+  select(-c(numPreferredArtists , numOverallArtists)) |>
+  mutate(
+    across( .cols = c(word , subj , sex , ethnic , familiarity , fam1 , jayz ,
+                  jayz1 , barkley , boondocks , boondocks1 , monique , bieber) ,
+           ~as.factor(.x))
+  )
 ```
 
 ## Data Simulation & Modeling
