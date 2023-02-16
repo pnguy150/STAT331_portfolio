@@ -268,7 +268,8 @@ ggplot(data = averages, mapping = aes(x = region, y = Difference)) +
                    xend = region)
   ) +
   geom_point() +
-  labs(title = "Difference in Average Price between Conventional and Organic Avocados by City", x = "City", y = "Average Price")
+  labs(title = "Difference in Average Price between Conventional and Organic 
+       Avocados by City", x = "City", y = "Average Price")
 
 
 ```
@@ -335,57 +336,83 @@ ggplot(data = avocado_ratios, mapping = aes(fill = Avocado_Type, x = region,
 -   Example 1
 Lab 4 Question 5
 ```{r dvs-3-1}
-ggplot(data = metros_avocado_data, mapping = aes(x = `Total Volume`, y = region)) +
+ggplot(data = metros_avocado_data, mapping = aes(x = `Total Volume`,
+                                                 y = region)) +
   geom_boxplot() +
   geom_jitter(alpha = .2) +
   labs(y = "Metros", title = "Metros With the Highest Average of Total Volume")
 ```
 
 -   Example 2
-
+Lab 3 Question 10
 ```{r dvs-3-2}
-
+ggplot(data = demographics_information, aes(x = age))+
+  geom_histogram() + 
+  facet_wrap(~ sex) +
+  labs(x = "Age (years)", y = ("Count") , 
+       title = "Histogram of Subject's Ages") +
+  theme(legend.position = "none")
 ```
 
 **DVS-4: I can calculate numerical summaries of variables.**
 
 -   Example 1
-
+Lab 4 Question 7
 ```{r dvs-4-1}
+avocado_ratios <- four_cities |>
+  pivot_longer(cols = c("Small_Hass":"Extra_Large_Hass"),
+               names_to = "Avocado_Type",
+               values_to = "Total") |>
+  group_by(region,Avocado_Type, type) |>
+  summarise(total = sum(Total))
 
 ```
 
 -   Example 2
-
+Lab 5 Question 2.2
 ```{r dvs-4-2}
+summarized_surveys <- surveys |>
+  group_by(species, year) |>
+  summarize(mean_weight = mean(weight)) 
 
 ```
 
 **DVS-5: I can find summaries of variables across multiple groups.**
 
 -   Example 1
-
+Lab 4 Question 6 (Revision)
 ```{r dvs-5-1}
-
+averages <- four_cities |>
+  group_by(region, type) |>
+  summarise(average = mean(AveragePrice)) |>
+  pivot_wider(names_from = type, values_from = average) |>
+  mutate(Difference = abs(conventional - organic))
 ```
 
 -   Example 2
-
+Lab 4 Question 7
 ```{r dvs-5-2}
+avocado_ratios <- four_cities |>
+  pivot_longer(cols = c("Small_Hass":"Extra_Large_Hass"),
+               names_to = "Avocado_Type",
+               values_to = "Total") |>
+  group_by(region,Avocado_Type, type) |>
+  summarise(total = sum(Total))
 
 ```
 
 **DVS-6: I can create tables which make my summaries clear to the reader.**
 
 -   Example 1
-
+Lab 4 Question 7
 ```{r dvs-6-1}
 
 ```
 
 -   Example 2
-
+Lab 5 Question 2.2
 ```{r dvs-6-2}
+
 
 ```
 
@@ -416,7 +443,14 @@ ggplot(data = metros_avocado_data, mapping = aes(x = `Total Volume`, y = region)
 -   `across()`
 
 ```{r pe-1-across}
-
+military_clean <- military_clean |>
+  mutate(
+    across(
+      .cols = c("1988":"2019"), .fns = as.numeric
+    )
+  )
+#I understand that this implementation is no longer right since across() has 
+#been reworked.
 ```
 
 -   `map()` functions
@@ -442,8 +476,15 @@ ggplot(data = metros_avocado_data, mapping = aes(x = `Total Volume`, y = region)
 **PE-3:I can use iteration to reduce repetition in my code.**
 
 -   `across()`
-
+Lab 3 Question 5
 ```{r pe-3-across}
+hiphop_clean <- hiphop |>
+  select(-c(numPreferredArtists , numOverallArtists)) |>
+  mutate(
+    across( .cols = c(word , subj , sex , ethnic , familiarity , fam1 , jayz ,
+                  jayz1 , barkley , boondocks , boondocks1 , monique , bieber) ,
+           .fns = as.factor)
+  )
 
 ```
 
