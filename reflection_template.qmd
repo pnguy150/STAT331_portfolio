@@ -139,6 +139,8 @@ hiphop_clean <- hiphop_clean |>
 
     Lab 3 Question 5 (revision)
 
+    ".fns = as.factor" was deprecated
+
 ```{r wd-4-factor}
 hiphop_clean <- hiphop |>
   select(-c(numPreferredArtists , numOverallArtists)) |>
@@ -256,6 +258,8 @@ I've done this in the following provided assignments:
 
     Lab 5 Question 3.3 (revision)
 
+    Axis titles were redundant, code was unclear
+
 ```{r r-2-1}
 surveys |>
   mutate(weekday = factor(lubridate::wday(x = date, label = TRUE), 
@@ -268,7 +272,7 @@ surveys |>
   ggplot(mapping = aes(x = weekday)) +
   geom_bar() +
   labs(title = "Number of Captured Rodents by Weekday vs Weekend", y = NULL, 
-       x = "Weekday vs Weekend")
+       x = NULL)
 ```
 
 -   Example 2
@@ -467,6 +471,8 @@ summarized_surveys <- surveys |>
 -   Example 1
 
     Lab 4 Question 6 (Revision)
+
+    Visualization was a bar plot when Cleveland dot plot was more appropriate
 
 ```{r dvs-5-1}
 averages <- four_cities |>
