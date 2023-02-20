@@ -1,0 +1,188 @@
+---
+title: "Lab 4"
+author: "Pablo Nguyen"
+format:
+  html:
+    fig-cap-location: top
+    theme: cerulean
+    self-contained: true
+    code-overflow: wrap
+    code-tools: true
+    code-fold: true
+execute: 
+  echo: true
+  errors: true
+  warning: false
+  messages: false
+---
+
+**0. Loading In Packages and Data**
+
+```{r}
+library(tidyverse)
+library(here)
+avocado <- read_csv(here("week4", "labs", "avocado.csv"))
+
+```
+
+**1. Data Description**
+
+The following data was collected by the Hass Avocado Board in 2018. It represents weekly retail scan data for National Retail volume and price. The retail data comes directly from retailers' cash register scans of Hass Avocados. Variables in the data include average cost of an individial avocado unit, even when sold in a bag of avocados. Other variables include:
+
+Date - The date of the observation
+
+AveragePrice - the average price of a single avocado
+
+type - conventional or organic
+
+year - the year
+
+Region - the city or region of the observation
+
+Total Volume - Total number of avocados sold
+
+PLU's (Price Lookup Codes) are included in the table as well, and represent the total number of avocado corresponding to each PLU was sold.
+
+**2. Data Cleaning**
+
+```{r}
+super_regions <- data.frame(region = c("GreatLakes", "Midsouth", "Northeast",
+                                 "Plains", "SouthCentral", "Southeast", 
+                                 "TotalUS", "West"))
+
+states <- data.frame(region = c("California", "WestTexNewMexico",
+                                "SouthCarolina", "NewYork", "Michigan",
+                                "Minnesota"))
+
+avocado_clean <- avocado |>
+  filter(region != "TotalUS") |>
+  rename("Small_Hass" = '4046', "Large_Hass" = '4225',
+         "Extra_Large_Hass" = '4770') 
+  
+
+avocado_clean_subregion <- avocado_clean |>
+  anti_join(super_regions, by = "region") 
+
+avocado_clean_major_region <- avocado_clean |>
+  semi_join( super_regions, by = "region") 
+
+avocado_clean_states <- avocado_clean |>
+  semi_join(states, by = "region") 
+
+avocado_clean_states |>
+  distinct(region)
+
+```
+
+**3.Most Small Avocados?**
+
+```{r}
+
+avocado_clean_major_region |>
+  group_by(region) |>
+  filter(year == 2017, type == "organic") |>
+  summarise( total_small_hass =  sum(Small_Hass)) |>
+  slice_max(total_small_hass)
+
+```
+
+As we can see, the West Region has the highest Small_Hass Avocado Sales. Though, it seems most of these sales come from California
+
+**4.Highest Month Sales**
+
+```{r}
+avocado_clean <- avocado_clean |>
+  separate( col = Date, into = c("Month", "Day", "Year") , sep = '/')
+
+avocado_clean_major_region <- avocado_clean_major_region |>
+  separate( col = Date, into = c("Month", "Day", "Year") , sep = '/')
+
+avocado_clean_subregion <- avocado_clean_subregion |>
+  separate( col = Date, into = c("Month", "Day", "Year") , sep = '/')
+
+
+avocado_clean |>
+  group_by(Month) |>
+  summarise(total_volume = sum(`Total Volume`)) |>
+  slice_max(total_volume)
+
+```
+
+According to the data, Month 2 (February) had the highest total avocado sales.
+
+**5. Metro Areas by Total Sales**
+
+```{r}
+
+top_five_metros <- avocado_clean_subregion |>
+  group_by(region) |>
+  summarise(total_vol_avg = mean(`Total Volume`)) |>
+  arrange(desc(total_vol_avg)) |>
+  slice(1:5)
+
+metros_avocado_data <- semi_join(avocado_clean_subregion, top_five_metros, 
+                                 by = "region")
+
+ggplot(data = metros_avocado_data, mapping = aes(x = `Total Volume`, y = region)) +
+  geom_boxplot() +
+  geom_jitter(alpha = .2) +
+  labs(y = "Metros", title = "Metros With the Highest Average of Total Volume")
+  
+```
+
+We can see that during most weeks, avocado sales were eihther zero or far above the average. Variance between points were very high.
+
+**6. Organic vs Conventional in California**
+
+```{r}
+
+#create data set with only these four cities
+four_cities <- data.frame( region = c("LosAngeles", "Sacramento", "SanDiego", 
+                                      "SanFrancisco"))
+four_cities <- inner_join(avocado_clean, four_cities, by = "region")
+
+#group by cities and type of avocado for the first barchart
+averages <- four_cities |>
+  group_by(region, type) |>
+  summarise(average = mean(AveragePrice)) |>
+  pivot_wider(names_from = type, values_from = average) |>
+  mutate(Difference = abs(conventional - organic))
+
+ggplot(data = averages, mapping = aes(x = region, y = Difference)) +
+  geom_segment(mapping = aes(yend = 0,
+                   xend = region)
+  ) +
+  geom_point() +
+  labs(title = "Average Prices in Each City For Conventional and Organic
+       Avocados", x = "City", y = "Average Price")
+
+
+```
+
+As we can see in the plots and data frame, San Francisco has the biggest difference in average prices between organic and conventional avocados.
+
+**7. Proportion of Avocado Sales by California Cities**
+
+```{r}
+#organizing data
+avocado_ratios <- four_cities |>
+  pivot_longer(cols = c("Small_Hass":"Extra_Large_Hass"),
+               names_to = "Avocado_Type",
+               values_to = "Total") |>
+  group_by(region,Avocado_Type, type) |>
+  summarise(total = sum(Total))
+
+ggplot(data = avocado_ratios, mapping = aes(fill = Avocado_Type, x = region,
+                                             y = total)) +
+  geom_bar(position="fill", stat="identity") +
+  scale_x_discrete(guide = guide_axis(n.dodge=2))+
+  facet_wrap(~ type) +
+  labs( x = "Region of CA", y = "Proportion of Mean Avocados Sold") +
+  scale_fill_discrete(name = "Avocado Size", labels = c("Extra Large", "Large",
+                                                        "Small"))
+
+# learned to edit legend titles from this
+#https://www.datanovia.com/en/blog/ggplot-legend-title-position-and-labels/
+#learned to avoid overlapping labels from this:
+#https://datavizpyr.com/how-to-dodge-overlapping-text-on-x-axis-labels-in-ggplot2/
+```
