@@ -527,14 +527,41 @@ avocado_ratios <- four_cities |>
 **DVS-7: I show creativity in my tables.**
 
 -   Example 1
-
+Challenge 9 3.1
 ```{r dvs-7-1}
-
+Allison_stats <- StateNames_A |>
+  filter(Name == "Allison") |>
+  group_by(State, Sex) |>
+  summarize(count_total = sum(Count), .groups = "drop") |> 
+  pivot_wider(names_from = Sex, values_from = count_total) |>
+  mutate(
+    across(.cols = c(F, M), 
+         ~ case_when(is.na(.x) ~ 0,TRUE ~ .x)
+                )) |>
+  gt() |>
+  cols_label(F = "Female Count", M = "Male Count") |>
+  tab_header(
+    title = "Number of Allisons born by State",
+    subtitle = "Seperated by Female and Male"
+  )
 ```
 
 -   Example 2
-
+Challenge 9 5.10
 ```{r dvs-7-2}
+Allen_names_CA_PA |>
+  #Find the sum of each Row
+  mutate(Total = pmap_int(list(Alan, Allan, Allen), sum)) |>
+  #find ratio by dividing each count by the total count of each row
+  mutate(
+    across(.cols = c(Alan:Allen), 
+           ~ .x/Total)
+    ) |>
+  subset(select = -c(Total)) |>
+  gt() |>
+  cols_label(Alan = "Ratio of Alans", Allan = "Ratio of Allans", 
+             Allen = "Ratio of Allens") |>
+  fmt_percent(columns = 2:4, decimals = 2) 
 
 ```
 
@@ -569,23 +596,55 @@ hiphop_clean <- hiphop |>
 ```
 
 -   `map()` functions
-
+Lab 8 step 4
 ```{r pe-1-map-1}
+1:12 |>
+  map_chr( ~ sing_day(xmas2, .x, Full.Phrase)) |>
+  cat()
 
 ```
 
 **PE-2: I can write functions to reduce repetition in my code.**
 
 -   Example 1
-
+lab 8, pluralize gift
 ```{r pe2-1}
+pluralize_gift <- function(gift){
+
+  gift <- case_when( str_detect(gift, pattern = "oo") 
+    ~ str_replace(string = gift, pattern = "oo", replacement =  "ee"),
+    str_detect(gift, pattern = "y$") 
+    ~ str_replace(string = gift, pattern = "y$", replacement = "ies"),
+    TRUE ~ str_c(gift, "s", sep = ""))
+  
+return(gift)
+
+}
 
 ```
 
 -   Example 2
-
+Lab 8, sing day
 ```{r pe2-2}
+sing_day <- function(df, day, col){
+  stopifnot(is.data.frame(df), is.numeric(day))
+  #step 1: set up the intro line
+  num_word <- english::ordinal(day)
+  intro <- 
+    glue::glue("On the {num_word} day of Christmas, my true love sent to me:")
 
+  #step 2: sing the gift phrases
+  phrases <- df |>
+    pull({{col}})
+  #put intro, then reverse order of phrases into lyrics
+  lyrics <- c(intro, phrases[day:1])
+  #step 3: put it all together
+  #flatten phrases into 1 string separated by newlines, 
+  #double newline at the end to seperate days
+  output_string <- str_flatten(lyrics, collapse = "\n") |>
+    str_c("\n\n") 
+ return(output_string)
+}
 ```
 
 **PE-3:I can use iteration to reduce repetition in my code.**
@@ -607,11 +666,23 @@ hiphop_clean <- hiphop |>
 
 -   `map()` functions (Provide 2 Examples)
 
+    Lab 8 Step 4
+
 ```{r pe-3-map-1}
+1:12 |>
+  map_chr( ~ sing_day(xmas2, .x, Full.Phrase)) |>
+  cat()
 
 ```
 
+Lab 8 step 2, make phrase
 ```{r pe-3-map-2}
+xmas2 <- xmas %>%
+  mutate(Full.Phrase = pmap_chr(.l = list(Day, Day,
+                                          Gift.Item, Verb, 
+                                          Adjective, Location), 
+                                .f = make_phrase)
+         )
 
 ```
 
@@ -682,13 +753,28 @@ sum(rnorm(n = 100, mean = 4.6, sd = .8)<4)
 
 -   Example 1
 
-```{r dsm-2-1}
+    Lab 9 4.4 and 4.6
 
+```{r dsm-2-1}
+linear_model <- lm(total_count ~ Year, data = count_by_year)
+linear_model |>
+  broom::augment() |>
+  ggplot(mapping = aes(y = .resid, x = .fitted)) +
+  geom_point() +
+  labs(title = "Residuals by Fitted Values", y = NULL, x = "Fitted Values")
 ```
 
 -   Example 2
 
+    Practice Activity 9.1
+
 ```{r dsm-2-2}
+linear_model <- lm(weight_after ~ weight_before, data = dataset)
+
+linear_model |>
+  broom::augment() |>
+  ggplot(mapping = aes(y = .resid, x = .fitted)) +
+  geom_point()
 
 ```
 
