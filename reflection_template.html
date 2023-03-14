@@ -3173,16 +3173,30 @@ Lab 2 Question 1</li>
 <h2 class="anchored" data-anchor-id="data-simulation-modeling">Data Simulation &amp; Modeling</h2>
 <p><strong>DSM-1: I can simulate data from a <em>variety</em> of probability models.</strong></p>
 <ul>
-<li>Example 1</li>
+<li><p>Example 1</p>
+<p>Practice Activity 9.2</p></li>
 </ul>
 <div class="cell">
-
+<div class="sourceCode cell-code" id="cb42"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb42-1"><a href="#cb42-1" aria-hidden="true" tabindex="-1"></a>music_man <span class="ot">&lt;-</span> <span class="cf">function</span>(n_tromb, n_cor, n_reed){</span>
+<span id="cb42-2"><a href="#cb42-2" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb42-3"><a href="#cb42-3" aria-hidden="true" tabindex="-1"></a>  trombones <span class="ot">&lt;-</span> <span class="fu">sum</span>(<span class="fu">rnorm</span>(n_tromb, <span class="at">mean =</span> <span class="fl">4.6</span>, <span class="at">sd =</span> .<span class="dv">8</span>))</span>
+<span id="cb42-4"><a href="#cb42-4" aria-hidden="true" tabindex="-1"></a>  cornets <span class="ot">&lt;-</span> <span class="fu">sum</span>(<span class="fu">runif</span>(n_cor, <span class="at">min =</span> <span class="fl">1.5</span>, <span class="at">max =</span> <span class="fl">3.5</span>))</span>
+<span id="cb42-5"><a href="#cb42-5" aria-hidden="true" tabindex="-1"></a>  reeds <span class="ot">&lt;-</span> <span class="fu">sum</span>(<span class="fu">rchisq</span>(n_reed, <span class="at">df =</span> <span class="dv">4</span>))</span>
+<span id="cb42-6"><a href="#cb42-6" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb42-7"><a href="#cb42-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">return</span>(trombones <span class="sc">+</span> cornets <span class="sc">+</span> reeds)</span>
+<span id="cb42-8"><a href="#cb42-8" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb42-9"><a href="#cb42-9" aria-hidden="true" tabindex="-1"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <ul>
-<li>Example 2</li>
+<li><p>Example 2</p>
+<p>Practice Activity 9.2, Warmup</p></li>
 </ul>
 <div class="cell">
-
+<div class="sourceCode cell-code" id="cb43"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb43-1"><a href="#cb43-1" aria-hidden="true" tabindex="-1"></a><span class="fu">qunif</span>(<span class="at">p =</span> .<span class="dv">95</span>, <span class="at">min =</span> <span class="fl">1.5</span>, <span class="at">max =</span> <span class="fl">3.5</span>)</span>
+<span id="cb43-2"><a href="#cb43-2" aria-hidden="true" tabindex="-1"></a><span class="fu">qnorm</span>(.<span class="dv">10</span>, <span class="at">mean =</span> <span class="fl">4.6</span>, <span class="at">sd =</span> .<span class="dv">8</span>)</span>
+<span id="cb43-3"><a href="#cb43-3" aria-hidden="true" tabindex="-1"></a><span class="dv">1</span><span class="sc">-</span><span class="fu">pnorm</span>(<span class="at">q =</span> <span class="dv">5</span>, <span class="at">mean =</span> <span class="fl">4.6</span>, <span class="at">sd =</span> .<span class="dv">8</span>)</span>
+<span id="cb43-4"><a href="#cb43-4" aria-hidden="true" tabindex="-1"></a><span class="dv">1</span><span class="sc">-</span><span class="fu">pchisq</span>(<span class="at">q =</span> <span class="dv">5</span>, <span class="at">df =</span> <span class="dv">4</span>)</span>
+<span id="cb43-5"><a href="#cb43-5" aria-hidden="true" tabindex="-1"></a><span class="fu">sum</span>(<span class="fu">rnorm</span>(<span class="at">n =</span> <span class="dv">100</span>, <span class="at">mean =</span> <span class="fl">4.6</span>, <span class="at">sd =</span> .<span class="dv">8</span>)<span class="sc">&lt;</span><span class="dv">4</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p><strong>DSM-2: I can fit a linear regression and extract necessary summary measures.</strong></p>
 <ul>
