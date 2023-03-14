@@ -76,14 +76,11 @@ hiphop_clean |>
 
 -   character -- specifically a string
 
-    Lab 4 Question 2: Data Cleaning
+   Lab 9 5.8
 
 ```{r wd-3-string}
-avocado_clean <- avocado |>
-  filter(region != "TotalUS") |>
-  rename("Small_Hass" = '4046', "Large_Hass" = '4225',
-         "Extra_Large_Hass" = '4770') 
-
+Allen_names <- StateNames_A |> 
+  filter(Name %in% c("Allen", "Allan", "Alan"))
 ```
 
 -   factor
@@ -236,14 +233,18 @@ avocado_ratios <- four_cities |>
 
 -   `pivot_wider()`
 
-    Lab 4 Question 6
+    Lab 9 3.1
 
 ```{r wd-7-wide}
-averages <- four_cities |>
-  group_by(region, type) |>
-  summarise(average = mean(AveragePrice)) |>
-  pivot_wider(names_from = type, values_from = average) |>
-  mutate(Difference = abs(conventional - organic))
+Allison_stats <- StateNames_A |>
+  filter(Name == "Allison") |>
+  group_by(State, Sex) |>
+  summarize(count_total = sum(Count), .groups = "drop") |> 
+  pivot_wider(names_from = Sex, values_from = count_total) |>
+  mutate(
+    across(.cols = c(F, M), 
+         ~ case_when(is.na(.x) ~ 0,TRUE ~ .x)
+                ))
 ```
 
 ## Reproducibility
@@ -333,17 +334,16 @@ ggplot(data = surveys , mapping = aes(x = weight , y = hindfoot_length)) +
 
 -   numeric variables and categorical variables
 
-    Lab 4 Question 6
+    Lab 7 2.2
 
 ```{r dvs-2-num-cat}
-ggplot(data = averages, mapping = aes(x = region, y = Difference)) +
-  geom_segment(mapping = aes(yend = 0,
-                   xend = region)
-  ) +
-  geom_point() +
-  labs(title = "Difference in Average Price between Conventional and Organic 
-       Avocados by City", x = "City", y = "Average Price")
-
+#plot data
+plot_data |>
+  ggplot(mapping = aes(x = year, fill = trip)) +
+  geom_bar() +
+  facet_wrap(~section) +
+  labs(title = "Frequency of NAs by Year, Trip, And Section", x = "Year", 
+       y = NULL, fill = "Trip Number")
 
 ```
 
@@ -398,17 +398,16 @@ summarized_surveys |>
 
 -   Example 2
 
-    Lab 4 Question 7
+    Lab 7 2.2
 
 ```{r dvs-2-2}
-ggplot(data = avocado_ratios, mapping = aes(fill = Avocado_Type, x = region,
-                                             y = total)) +
-  geom_bar(position="fill", stat="identity") +
-  scale_x_discrete(guide = guide_axis(n.dodge=2))+
-  facet_wrap(~ type) +
-  labs( x = "Region of CA", y = "Proportion of Mean Avocados Sold") +
-  scale_fill_discrete(name = "Avocado Size", labels = c("Extra Large", "Large",
-                                                        "Small"))
+#plot data
+plot_data |>
+  ggplot(mapping = aes(x = year, fill = trip)) +
+  geom_bar() +
+  facet_wrap(~section) +
+  labs(title = "Frequency of NAs by Year, Trip, And Section", x = "Year", 
+       y = NULL, fill = "Trip Number")
 
 ```
 
@@ -443,15 +442,18 @@ ggplot(data = demographics_information, aes(x = age))+
 
 -   Example 1
 
-    Lab 4 Question 7
+    Lab 9 3.1
 
 ```{r dvs-4-1}
-avocado_ratios <- four_cities |>
-  pivot_longer(cols = c("Small_Hass":"Extra_Large_Hass"),
-               names_to = "Avocado_Type",
-               values_to = "Total") |>
-  group_by(region,Avocado_Type, type) |>
-  summarise(total = sum(Total))
+Allison_stats <- StateNames_A |>
+  filter(Name == "Allison") |>
+  group_by(State, Sex) |>
+  summarize(count_total = sum(Count), .groups = "drop") |> 
+  pivot_wider(names_from = Sex, values_from = count_total) |>
+  mutate(
+    across(.cols = c(F, M), 
+         ~ case_when(is.na(.x) ~ 0,TRUE ~ .x)
+                ))
 
 ```
 
@@ -470,58 +472,78 @@ summarized_surveys <- surveys |>
 
 -   Example 1
 
-    Lab 4 Question 6 (Revision)
-
-    Visualization was a bar plot when Cleveland dot plot was more appropriate
+    Lab 9 3.1
 
 ```{r dvs-5-1}
-averages <- four_cities |>
-  group_by(region, type) |>
-  summarise(average_avocado_price = mean(AveragePrice)) |>
-  pivot_wider(names_from = type, values_from = average) |>
-  mutate(Difference = abs(conventional - organic))
+Allison_stats <- StateNames_A |>
+  filter(Name == "Allison") |>
+  group_by(State, Sex) |>
+  summarize(count_total = sum(Count), .groups = "drop") |> 
+  pivot_wider(names_from = Sex, values_from = count_total) |>
+  mutate(
+    across(.cols = c(F, M), 
+         ~ case_when(is.na(.x) ~ 0,TRUE ~ .x)
+                ))
 ```
 
 -   Example 2
-
-    Lab 4 Question 7
+Lab 9 5.9
 
 ```{r dvs-5-2}
-avocado_ratios <- four_cities |>
-  pivot_longer(cols = c("Small_Hass":"Extra_Large_Hass"),
-               names_to = "Avocado_Type",
-               values_to = "Total") |>
-  group_by(region,Avocado_Type, type) |>
-  summarise(total = sum(Total))
-
+Allen_names_CA_PA <- Allen_names |>
+  filter(State == "CA" | State == "PA") |>
+  group_by(State, Name) |>
+  summarize(Total_Count = sum(Count, na.rm = TRUE), .groups = "drop") |>
+  pivot_wider(names_from = Name, values_from = Total_Count) |>
+  mutate(
+    across(.cols = c("Alan" : "Allen"), 
+         ~ case_when(is.na(.x) ~0,TRUE ~.x)
+                ))
+Allen_names_CA_PA
 ```
 
 **DVS-6: I can create tables which make my summaries clear to the reader.**
 
 -   Example 1
 
-    Lab 4 Question 7
+    Challenge 9 5.10
 
 ```{r dvs-6-1}
- averages <- four_cities |>
-  group_by(region, type) |>
-  summarise(average_avocado_price = mean(AveragePrice)) |>
-  pivot_wider(names_from = type, values_from = average) |>
-  mutate(Difference = abs(conventional - organic))
+Allen_names_CA_PA |>
+  #Find the sum of each Row
+  mutate(Total = pmap_int(list(Alan, Allan, Allen), sum)) |>
+  #find ratio by dividing each count by the total count of each row
+  mutate(
+    across(.cols = c(Alan:Allen), 
+           ~ .x/Total)
+    ) |>
+  subset(select = -c(Total)) |>
+  gt() |>
+  cols_label(Alan = "Ratio of Alans", Allan = "Ratio of Allans", 
+             Allen = "Ratio of Allens") |>
+  fmt_percent(columns = 2:4, decimals = 2) 
 ```
 
 -   Example 2
 
-    Lab 4 Question 7
+  Challenge 9 3.1
 
 ```{r dvs-6-2}
-avocado_ratios <- four_cities |>
-  pivot_longer(cols = c("Small_Hass":"Extra_Large_Hass"),
-               names_to = "Avocado_Type",
-               values_to = "Total") |>
-  group_by(region,Avocado_Type, type) |>
-  summarise(total = sum(Total))
-
+Allison_stats <- StateNames_A |>
+  filter(Name == "Allison") |>
+  group_by(State, Sex) |>
+  summarize(count_total = sum(Count), .groups = "drop") |> 
+  pivot_wider(names_from = Sex, values_from = count_total) |>
+  mutate(
+    across(.cols = c(F, M), 
+         ~ case_when(is.na(.x) ~ 0,TRUE ~ .x)
+                )) |>
+  gt() |>
+  cols_label(F = "Female Count", M = "Male Count") |>
+  tab_header(
+    title = "Number of Allisons born by State",
+    subtitle = "Seperated by Female and Male"
+  )
 ```
 
 **DVS-7: I show creativity in my tables.**
@@ -782,7 +804,7 @@ linear_model |>
 
 <!-- How did you revise your thinking throughout the course? How did you revise your thinking on the code examples you have provided in your portfolio? -->
 
-Every Week, I have tried to revise my thinking by resubmitting Labs and Challenges that I did not get full credit on. This has turned out to be every week except week 5. However, I have been trying to incorporate corrections into new assignments, such as improving with visualizations and slicing to find max values in summaries. Additionally, some of the examples provided are revisions so that they can better show my abilities and attainment of learning objectives.
+Every Week, I have tried to revise my thinking by resubmitting Labs and Challenges that I did not get full credit on.  However, I have been trying to incorporate corrections into new assignments, such as improving with visualizations and slicing to find max values in summaries. Additionally, some of the examples provided are revisions so that they can better show my abilities and attainment of learning objectives.
 
 ## Extending My Thinking
 
