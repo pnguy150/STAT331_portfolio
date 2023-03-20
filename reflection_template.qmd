@@ -724,7 +724,7 @@ hiphop_clean <- hiphop |>
 
 -   Example 1
 
-    Practice Activity 9.2
+    Practice Activity 9.2 catching a con
 
 ```{r dsm-1-1}
 
