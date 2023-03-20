@@ -4,12 +4,11 @@ format: html
 editor: visual
 ---
 
-Finish the sentence with another student’s name: “If [Student] doesn’t earn an A, then nobody should, because…” Explain your choice and your reasoning.
+Finish the sentence with another student's name: "If \[Student\] doesn't earn an A, then nobody should, because..." Explain your choice and your reasoning.
 
 If Chloe Feehan doesn't earn an A, then nobody should because while peer reviewing her code, I literally could not find a fault with her code. She completed every question efficiently and had thoughtful visiualiations.
 
-What was the most difficult part of the class for you? List a general topic, a specific problem, a kind of work we did, etc. and explain why.
-The most difficult part of the class for me was pivoting datasets. It was tough for me determining when/how to pivot datasets to make them usable, and why I should. 
+What was the most difficult part of the class for you? List a general topic, a specific problem, a kind of work we did, etc. and explain why. The most difficult part of the class for me was pivoting datasets. It was tough for me determining when/how to pivot datasets to make them usable, and why I should.
 
 What was the easiest part of the class for you? Explain why.
 
@@ -23,4 +22,4 @@ Give one piece of advice to a student just beginning a quarter of STAT 331 that 
 
 One piece of advice I would give is to constantly try to use concepts from previous labs in whatever lab you are doing. It reinforces your knowledge of these concepts and will most likely make your work more efficient and your visualizations much better.
 
----
+------------------------------------------------------------------------
