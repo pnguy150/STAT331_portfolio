@@ -76,7 +76,7 @@ hiphop_clean |>
 
 -   character -- specifically a string
 
-   Lab 9 5.8
+Lab 9 5.8
 
 ```{r wd-3-string}
 Allen_names <- StateNames_A |> 
@@ -233,18 +233,15 @@ avocado_ratios <- four_cities |>
 
 -   `pivot_wider()`
 
-    Lab 9 3.1
+    Lab 9 3.1 (revised, using values_fill = 0)
 
 ```{r wd-7-wide}
 Allison_stats <- StateNames_A |>
   filter(Name == "Allison") |>
   group_by(State, Sex) |>
   summarize(count_total = sum(Count), .groups = "drop") |> 
-  pivot_wider(names_from = Sex, values_from = count_total) |>
-  mutate(
-    across(.cols = c(F, M), 
-         ~ case_when(is.na(.x) ~ 0,TRUE ~ .x)
-                ))
+  pivot_wider(names_from = Sex, values_from = count_total, values_fill = 0) 
+Allison_stats
 ```
 
 ## Reproducibility
@@ -449,11 +446,8 @@ Allison_stats <- StateNames_A |>
   filter(Name == "Allison") |>
   group_by(State, Sex) |>
   summarize(count_total = sum(Count), .groups = "drop") |> 
-  pivot_wider(names_from = Sex, values_from = count_total) |>
-  mutate(
-    across(.cols = c(F, M), 
-         ~ case_when(is.na(.x) ~ 0,TRUE ~ .x)
-                ))
+  pivot_wider(names_from = Sex, values_from = count_total, values_fill = 0) 
+
 
 ```
 
@@ -479,27 +473,17 @@ Allison_stats <- StateNames_A |>
   filter(Name == "Allison") |>
   group_by(State, Sex) |>
   summarize(count_total = sum(Count), .groups = "drop") |> 
-  pivot_wider(names_from = Sex, values_from = count_total) |>
-  mutate(
-    across(.cols = c(F, M), 
-         ~ case_when(is.na(.x) ~ 0,TRUE ~ .x)
-                ))
+  pivot_wider(names_from = Sex, values_from = count_total, values_fill = 0) 
 ```
 
--   Example 2
-Lab 9 5.9
+-   Example 2 Lab 9 5.9 (revised, using values_fill)
 
 ```{r dvs-5-2}
 Allen_names_CA_PA <- Allen_names |>
   filter(State == "CA" | State == "PA") |>
   group_by(State, Name) |>
   summarize(Total_Count = sum(Count, na.rm = TRUE), .groups = "drop") |>
-  pivot_wider(names_from = Name, values_from = Total_Count) |>
-  mutate(
-    across(.cols = c("Alan" : "Allen"), 
-         ~ case_when(is.na(.x) ~0,TRUE ~.x)
-                ))
-Allen_names_CA_PA
+  pivot_wider(names_from = Name, values_from = Total_Count, values_fill = 0)
 ```
 
 **DVS-6: I can create tables which make my summaries clear to the reader.**
@@ -526,7 +510,7 @@ Allen_names_CA_PA |>
 
 -   Example 2
 
-  Challenge 9 3.1
+Challenge 9 3.1
 
 ```{r dvs-6-2}
 Allison_stats <- StateNames_A |>
@@ -548,18 +532,14 @@ Allison_stats <- StateNames_A |>
 
 **DVS-7: I show creativity in my tables.**
 
--   Example 1
-Challenge 9 3.1
+-   Example 1 Challenge 9 3.1
+
 ```{r dvs-7-1}
 Allison_stats <- StateNames_A |>
   filter(Name == "Allison") |>
   group_by(State, Sex) |>
   summarize(count_total = sum(Count), .groups = "drop") |> 
-  pivot_wider(names_from = Sex, values_from = count_total) |>
-  mutate(
-    across(.cols = c(F, M), 
-         ~ case_when(is.na(.x) ~ 0,TRUE ~ .x)
-                )) |>
+  pivot_wider(names_from = Sex, values_from = count_total, values_fill = 0) |>
   gt() |>
   cols_label(F = "Female Count", M = "Male Count") |>
   tab_header(
@@ -568,8 +548,8 @@ Allison_stats <- StateNames_A |>
   )
 ```
 
--   Example 2
-Challenge 9 5.10
+-   Example 2 Challenge 9 5.10
+
 ```{r dvs-7-2}
 Allen_names_CA_PA |>
   #Find the sum of each Row
@@ -617,8 +597,8 @@ hiphop_clean <- hiphop |>
   )
 ```
 
--   `map()` functions
-Lab 8 step 4
+-   `map()` functions Lab 8 step 4
+
 ```{r pe-1-map-1}
 1:12 |>
   map_chr( ~ sing_day(xmas2, .x, Full.Phrase)) |>
@@ -628,8 +608,8 @@ Lab 8 step 4
 
 **PE-2: I can write functions to reduce repetition in my code.**
 
--   Example 1
-lab 8, pluralize gift
+-   Example 1 lab 8, pluralize gift
+
 ```{r pe2-1}
 pluralize_gift <- function(gift){
 
@@ -645,8 +625,8 @@ return(gift)
 
 ```
 
--   Example 2
-Lab 8, sing day
+-   Example 2 Lab 8, sing day
+
 ```{r pe2-2}
 sing_day <- function(df, day, col){
   stopifnot(is.data.frame(df), is.numeric(day))
@@ -698,6 +678,7 @@ hiphop_clean <- hiphop |>
 ```
 
 Lab 8 step 2, make phrase
+
 ```{r pe-3-map-2}
 xmas2 <- xmas %>%
   mutate(Full.Phrase = pmap_chr(.l = list(Day, Day,
@@ -804,7 +785,7 @@ linear_model |>
 
 <!-- How did you revise your thinking throughout the course? How did you revise your thinking on the code examples you have provided in your portfolio? -->
 
-Every Week, I have tried to revise my thinking by resubmitting Labs and Challenges that I did not get full credit on.  However, I have been trying to incorporate corrections into new assignments, such as improving with visualizations and slicing to find max values in summaries. Additionally, some of the examples provided are revisions so that they can better show my abilities and attainment of learning objectives.
+Every Week, I have tried to revise my thinking by resubmitting Labs and Challenges that I did not get full credit on. However, I have been trying to incorporate corrections into new assignments, such as improving with visualizations and slicing to find max values in summaries. Additionally, some of the examples provided are revisions so that they can better show my abilities and attainment of learning objectives.
 
 ## Extending My Thinking
 
