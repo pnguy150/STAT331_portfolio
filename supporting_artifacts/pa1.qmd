@@ -1,0 +1,36 @@
+
+---
+title: "pa 9.1"
+author: "Pablo Nguyen"
+format:
+  html:
+    fig-cap-location: top
+    theme: cerulean
+    self-contained: true
+    code-overflow: wrap
+    code-tools: true
+    code-fold: true
+execute: 
+  echo: true
+  errors: true
+  warning: false
+---
+
+```{r packages}
+library(tidyverse)
+library(moderndive)
+library(skimr)
+library(gapminder)
+library(broom)
+library(janitor)
+dataset <- read_csv("mystery_animal.csv")
+
+linear_model <- lm(weight_after ~ weight_before, data = dataset)
+
+linear_model |>
+  broom::augment() |>
+  ggplot(mapping = aes(y = .resid, x = .fitted)) +
+  geom_point()
+
+```
+

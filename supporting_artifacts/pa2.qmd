@@ -1,0 +1,95 @@
+---
+title: "pa 9.2"
+author: "Pablo Nguyen"
+format:
+  html:
+    fig-cap-location: top
+    theme: cerulean
+    self-contained: true
+    code-overflow: wrap
+    code-tools: true
+    code-fold: true
+execute: 
+  echo: true
+  errors: true
+  warning: false
+---
+```{r}
+library(tidyverse)
+library(moderndive)
+library(skimr)
+library(gapminder)
+library(broom)
+library(janitor)
+```
+
+
+Trombones weights are Normally distributed, with a mean weight of 4.6 pounds and a standard deviation of 0.8 pounds.
+
+Trumpet weights are Uniformly distributed between 1.5 and 3.5 pounds.
+
+Reed instruments (like clarinets, bassoons, and saxophones) have weights that are Chi-Square distributed with 4 degrees of freedom.
+
+```{r warm up}
+qunif(p = .95, min = 1.5, max = 3.5)
+qnorm(.10, mean = 4.6, sd = .8)
+1-pnorm(q = 5, mean = 4.6, sd = .8)
+1-pchisq(q = 5, df = 4)
+sum(rnorm(n = 100, mean = 4.6, sd = .8)<4)
+```
+
+2 Warm-up
+What is the 95th percentile for trumpet weight?
+3.4
+What is the 10th percentile for trombone weight?
+3.574
+About what percent of trombones do you expect to be more than 5 pounds?
+.3085, or 30.85%
+About what percent of reed instruments do you expect to be more than 5 pounds?
+.2872, or 28,72%
+Simulate 100 random trombone weights. How many of them were below 4 pounds?
+19 - 31
+
+
+3 Catching a Con
+You manage to intercept a shipping notice for delivery to Professor Hill. It says the following:
+
+Wells Fargo Shipment 1957
+
+To:  Harold Hill, Mason City, Iowa
+From:  Music Factory, Gary, Indiana
+
+Items included:
+    Trombones: 76
+    Cornets: 110
+    Saxophones: 542
+    Clarinets: 318
+    Bassoons: 175
+    
+Total Shipped Weight: 4532 lbs.
+This is your chance to catch Professor Hill in his lie!
+
+First, write a function that samples the correct number of weights of trombones, cornets (trumpets), and reed instruments (saxophones, clarinets, bassoons), and then returns the total weight of the shipment.
+
+Then, use that function to create random samples of the total weight of 1000 possible shipments.
+
+```{r function}
+set.seed(1957)
+
+music_man <- function(n_tromb, n_cor, n_reed){
+  
+  trombones <- sum(rnorm(n_tromb, mean = 4.6, sd = .8))
+  cornets <- sum(runif(n_cor, min = 1.5, max = 3.5))
+  reeds <- sum(rchisq(n_reed, df = 4))
+  
+  return(trombones + cornets + reeds)
+  
+}
+
+my_weights <- map_dbl(.x = 1:1000, 
+                      .f = ~ music_man(n_tromb = 76, n_cor = 110, n_reed = 1035)
+                      ) 
+sum(my_weights <= 4532)
+```
+
+Only 7 were below the number, I think he is lying

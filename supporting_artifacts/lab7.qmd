@@ -1,0 +1,120 @@
+---
+title: "Lab 7: Functions and Fish"
+author: "Pablo Nguyen"
+format:
+  html:
+    fig-cap-location: top
+    theme: cerulean
+    self-contained: true
+    code-overflow: wrap
+    code-tools: true
+    code-fold: true
+execute: 
+  echo: true
+  errors: true
+  warning: false
+  messages: false
+---
+## 1: Data
+
+```{r load packages and data}
+
+library(tidyverse)
+
+BlackFootFish <- read_csv(here::here("week7", "labs", "BlackfootFish.csv"))
+
+```
+
+## 2: Summaries and Plots
+**2.1**
+```{r Find NAs}
+#print amount of missing values in each column
+BlackFootFish |>
+  summarise(across(.cols = everything(),
+                   ~sum(is.na(.x))
+  ))
+  
+```
+
+**2.2**
+```{r find NAs across values}
+#create data that only have the NA values in Weight
+plot_data <- BlackFootFish |>
+  select(year, trip, section, weight) |>
+  mutate(trip = as.factor(trip)) |>
+  filter(is.na(weight))
+
+#plot data
+plot_data |>
+  ggplot(mapping = aes(x = year, fill = trip)) +
+  geom_bar() +
+  facet_wrap(~section) +
+  labs(title = "Frequency of NAs by Year, Trip, And Section", x = "Year", 
+       y = NULL, fill = "Trip Number")
+
+```
+
+## 3: Adjusting the Data
+
+**3.1**
+
+```{r rescale function}
+#function declaration: rescaling all values in vector between 0 and 1
+rescale01 = function(vec){
+  min = min(vec, na.rm = TRUE)
+  new_vector <- (vec - min) /
+    (max(vec, na.rm = TRUE) - min)
+  
+  return(new_vector)
+}
+```
+
+**3.2**
+```{r adding stops}
+rescale01 = function(vec){
+  stopifnot(is.numeric(vec), length(vec) > 1)
+  min = min(vec, na.rm = TRUE)
+  new_vector <- (vec - min) /
+    (max(vec, na.rm = TRUE) - min) 
+  
+  return(new_vector)
+}
+```
+
+**3.3**
+```{r testing function}
+x <- c(1:85, NA)
+x <- rescale01(x)
+max(x, na.rm = TRUE)
+min(x, na.rm = TRUE)
+```
+
+**3.4**
+```{r testing 2}
+#| layout-nrow: 2
+#create new dataset for this plot
+rescaled_length <- BlackFootFish |>
+  mutate(length = rescale01(length))
+
+ggplot(data = BlackFootFish, mapping = aes(x = length)) +
+  geom_boxplot()
+
+ggplot(data = rescaled_length, mapping = aes(x = length)) +
+  geom_boxplot()
+```
+
+**3.5**
+```{r variables}
+#function call: use the rescale function across columns.
+rescale_column <- function(df, cols){
+  stopifnot(is.data.frame(df))
+  df <- df |> 
+    mutate(across(.cols = {{ cols }}, 
+                  ~ rescale01(.x)
+                  )
+           )
+  return (df)
+}
+
+rescale_column(BlackFootFish, length:weight)
+```

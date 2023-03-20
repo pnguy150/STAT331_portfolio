@@ -1,0 +1,158 @@
+---
+title: "Challenge 9"
+author: "Pablo Nguyen"
+format:
+  html:
+    fig-cap-location: top
+    theme: cerulean
+    self-contained: true
+    code-overflow: wrap
+    code-tools: true
+    code-fold: true
+execute: 
+  echo: true
+  errors: true
+  warning: false
+---
+
+Setup
+
+```{r setup}
+library(tidyverse)
+library(moderndive)
+library(skimr)
+library(gapminder)
+library(broom)
+library(janitor)
+library(gt)
+StateNames_A <- read_csv(here::here("week9", "labs", 
+                                    "BabyNames", "StateNames_A.csv")) 
+
+DT::datatable(StateNames_A)
+
+```
+
+3.1
+
+```{r Make Table}
+
+StateNames_A <- StateNames_A %>%
+  rename("Sex" = "Gender")
+  
+Allison_stats <- StateNames_A |>
+  filter(Name == "Allison") |>
+  group_by(State, Sex) |>
+  summarize(count_total = sum(Count), .groups = "drop") |> 
+  pivot_wider(names_from = Sex, values_from = count_total) |>
+  mutate(
+    across(.cols = c(F, M), 
+         ~ case_when(is.na(.x) ~ 0,TRUE ~ .x)
+                )) |>
+  gt() |>
+  cols_label(F = "Female Count", M = "Male Count") |>
+  tab_header(
+    title = "Number of Allisons born by State",
+    subtitle = "Seperated by Female and Male"
+  )
+Allison_stats
+
+```
+
+3.2
+
+```{r only females}
+allison_f <- StateNames_A |>
+  filter(Sex == "F", Name == "Allison" ) 
+```
+
+3.3
+
+```{r create vis}
+count_by_year <- allison_f |>
+  group_by(Year) |>
+  summarize(total_count = sum(Count), .groups = "drop") 
+
+
+ggplot(data = count_by_year, mapping = aes(x = Year, y = total_count)) +
+  geom_point() + 
+  labs(y = NULL, title = "Total Number of Allisons Born by Year",
+       x = "Year")
+```
+
+4.4
+
+```{r create regression}
+linear_model <- lm(total_count ~ Year, data = count_by_year)
+```
+
+4.5 The Linear Model is : Estimated Total Number of Allisons = 209690 - 102\*Year
+
+4.6
+
+```{r residuals}
+linear_model |>
+  broom::augment() |>
+  ggplot(mapping = aes(y = .resid, x = .fitted)) +
+  geom_point() +
+  labs(title = "Residuals by Fitted Values", y = NULL, x = "Fitted Values")
+```
+
+When observing Residuals by Fitted Values, We can see that equivariance is not satisfied. Residuals are higher near the extreme values and lower near the middle values of the study. Therefore, We might consider using log(x) values.
+
+4.7 According to the Model, the Name Allison is not very cool anymore since the year coefficient is negative. Therefore, as the years go on, Allison gets less popular.
+
+5.8
+
+```{r similar names}
+Allen_names <- StateNames_A |> 
+  filter(Name %in% c("Allen", "Allan", "Alan"))
+
+Allen_names |>
+  group_by(Year, Name) |>
+  summarize(Yearly_Count = sum(Count), .groups = "drop") |>
+  ggplot(mapping = aes(x = Year, y = Yearly_Count, color = Name)) +
+           geom_line()
+```
+
+5.9
+
+```{r CA vs PA}
+#Filter Allen names by CA and PA state name
+Allen_names_CA_PA <- Allen_names |>
+  filter(State == "CA" | State == "PA") |>
+  group_by(State, Name) |>
+  summarize(Total_Count = sum(Count, na.rm = TRUE), .groups = "drop") |>
+  pivot_wider(names_from = Name, values_from = Total_Count) |>
+  mutate(
+    across(.cols = c("Alan" : "Allen"), 
+         ~ case_when(is.na(.x) ~0,TRUE ~.x)
+                )) 
+
+Allen_names_CA_PA |>
+  gt() |>
+  cols_label(Alan = "Amount of Alans", Allan = "Amount of Allans",
+             Allen = "Amount of Allens")
+```
+
+5.10
+
+```{r Ratios}
+Allen_names_CA_PA |>
+  #Find the sum of each Row
+  mutate(Total = pmap_int(list(Alan, Allan, Allen), sum)) |>
+  #find ratio by dividing each count by the total count of each row
+  mutate(
+    across(.cols = c(Alan:Allen), 
+           ~ .x/Total)
+    ) |>
+  subset(select = -c(Total)) |>
+  gt() |>
+  cols_label(Alan = "Ratio of Alans", Allan = "Ratio of Allans", 
+             Allen = "Ratio of Allens") |>
+  fmt_percent(columns = 2:4, decimals = 2) 
+#got some help from this website:
+#https://stackoverflow.com/questions/
+#21818181/applying-a-function-to-every-row-of-a-table-using-dplyr
+```
+
+For the challenge, I converted my tables into gt tables. In order to spice up my tables even more, I added a title and subtitle to the table containing number of Allisons by Sex and State. Additionally, I formatted the percentage values of the Table containing the percentage of each Allen spelling.
